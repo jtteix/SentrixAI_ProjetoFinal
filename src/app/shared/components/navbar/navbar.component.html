@@ -1,0 +1,55 @@
+<header
+  class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+  [class.glass-strong]="isScrolled"
+  [class.bg-transparent]="!isScrolled">
+  <nav class="mx-auto max-w-7xl px-6 py-4">
+    <div class="flex items-center justify-between">
+      <!-- Logo -->
+      <a routerLink="/" class="flex items-center gap-3 group">
+        <div class="relative">
+          <div class="absolute inset-0 bg-primary/30 blur-xl rounded-full group-hover:bg-primary/50 transition-all"></div>
+          <lucide-icon [img]="Shield" class="relative h-8 w-8 text-primary"></lucide-icon>
+        </div>
+        <span class="text-xl font-bold tracking-tight">
+          SENTRIX <span class="text-primary">AI</span>
+        </span>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden md:flex items-center gap-8">
+        <a *ngFor="let link of navLinks" [href]="link.href"
+           class="text-sm text-muted-foreground hover:text-foreground transition-colors relative group">
+          {{ link.name }}
+          <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></span>
+        </a>
+      </div>
+
+      <!-- CTA Buttons -->
+      <div class="hidden md:flex items-center gap-4">
+        <a routerLink="/login"
+           class="inline-flex items-center justify-center h-8 px-4 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 glow-cyan-sm text-sm font-medium transition-all">
+          Acessar Dashboard
+        </a>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button (click)="toggleMobileMenu()" class="md:hidden p-2 text-foreground" aria-label="Toggle menu">
+        <lucide-icon [img]="isMobileMenuOpen ? X : Menu" class="h-6 w-6"></lucide-icon>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<!-- Mobile Menu -->
+<div *ngIf="isMobileMenuOpen" class="fixed inset-0 z-40 pt-20 glass-strong md:hidden">
+  <nav class="flex flex-col items-center gap-6 p-8">
+    <a *ngFor="let link of navLinks" [href]="link.href" (click)="closeMobileMenu()"
+       class="text-lg font-medium text-foreground hover:text-primary transition-colors">
+      {{ link.name }}
+    </a>
+    <a routerLink="/login" (click)="closeMobileMenu()"
+       class="inline-flex items-center justify-center h-9 px-5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 glow-cyan-sm text-sm font-medium transition-all">
+      Acessar Dashboard
+    </a>
+  </nav>
+</div>

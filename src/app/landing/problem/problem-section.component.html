@@ -1,0 +1,85 @@
+<section id="problem" class="relative py-24 md:py-32 overflow-visible">
+  <div class="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background pointer-events-none"></div>
+  <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-warning/50 to-transparent"></div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-6 overflow-visible">
+    <!-- Header -->
+    <div appScrollReveal class="text-center mb-16">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-warning/10 border border-warning/20 mb-6">
+        <lucide-icon [img]="AlertTriangle" class="h-4 w-4 text-warning"></lucide-icon>
+        <span class="text-sm text-warning">Ameaças em Evolução</span>
+      </div>
+      <h2 class="text-3xl md:text-5xl font-bold mb-6">
+        Os Riscos Ocultos dos <span class="text-warning">Veículos Conectados</span>
+      </h2>
+      <p class="text-lg text-muted-foreground max-w-2xl mx-auto">
+        Veículos modernos não são apenas máquinas. São computadores conectados sobre rodas — e cada conexão é uma potencial vulnerabilidade.
+      </p>
+    </div>
+
+    <!-- Stats grid (Stagger) -->
+    <div appScrollReveal="stagger" class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
+      <div *ngFor="let stat of stats" class="glass rounded-xl p-6 text-center">
+        <div class="text-3xl md:text-4xl font-bold text-warning mb-2">{{ stat.value }}</div>
+        <p class="text-sm text-muted-foreground">{{ stat.label }}</p>
+      </div>
+    </div>
+
+    <!-- Timeline Threats -->
+    <div class="relative overflow-visible">
+      <!-- Linha guia central (z-10) -->
+      <div class="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-border to-transparent hidden md:block z-10"></div>
+      
+      <div class="space-y-8 md:space-y-0 overflow-visible">
+        <div *ngFor="let threat of threats; let i = index"
+             class="relative mb-8 overflow-visible"
+             [ngClass]="i % 2 === 0 ? 'md:w-1/2 md:pr-12' : 'md:w-1/2 md:ml-auto md:pl-12'">
+
+          <!-- Círculo indicador (z-30) - Posicionado FORA do bloco de animação para não herdar distorções visuais -->
+          <div class="hidden md:block absolute top-6 w-4 h-4 rounded-full bg-background border-2 border-warning z-30"
+               [style.right]="i % 2 === 0 ? '-8px' : null"
+               [style.left]="i % 2 !== 0 ? '-8px' : null"></div>
+
+          <!-- Bloco do Card Animado (z-20) -->
+          <div [appScrollReveal]="i % 2 === 0 ? 'fade-left' : 'fade-right'" class="relative z-20 overflow-visible">
+            <a [href]="threat.url"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="glass rounded-xl p-6 hover:border-warning/50 transition-all duration-300 group border block cursor-pointer hover:scale-[1.01] hover:shadow-lg hover:shadow-warning/5"
+               [ngClass]="threat.severity === 'critical' ? 'border-danger/20' : 'border-warning/20'">
+              <div class="flex items-start gap-4">
+                <div class="p-3 rounded-lg transition-transform group-hover:scale-110"
+                     [ngClass]="threat.severity === 'critical' ? 'bg-danger/10 text-danger' : 'bg-warning/10 text-warning'">
+                  <lucide-icon [img]="threat.icon" class="h-6 w-6"></lucide-icon>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center gap-3 mb-2">
+                    <span class="text-sm font-mono text-muted-foreground">{{ threat.year }}</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full"
+                          [ngClass]="threat.severity === 'critical' ? 'bg-danger/20 text-danger' : 'bg-warning/20 text-warning'">
+                      {{ threat.severity === 'critical' ? 'Crítico' : 'Alto Risco' }}
+                    </span>
+                  </div>
+                  <h3 class="text-lg font-semibold mb-2 group-hover:text-warning transition-colors flex items-center gap-1">
+                    {{ threat.title }}
+                    <span class="text-xs opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all">➔</span>
+                  </h3>
+                  <p class="text-sm text-muted-foreground">{{ threat.description }}</p>
+                </div>
+              </div>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Indicator -->
+    <div appScrollReveal="scale" class="text-center mt-16">
+      <div class="inline-flex items-center gap-3 px-6 py-3 rounded-full glass">
+        <lucide-icon [img]="Shield" class="h-5 w-5 text-primary"></lucide-icon>
+        <span class="text-muted-foreground">A indústria automotiva precisa de uma nova abordagem de segurança</span>
+      </div>
+    </div>
+  </div>
+</section>

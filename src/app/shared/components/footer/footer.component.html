@@ -1,0 +1,97 @@
+<footer class="relative border-t border-border bg-secondary/30">
+  <div class="max-w-7xl mx-auto px-6 py-16">
+    <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-12">
+      <div class="lg:col-span-2">
+        <a routerLink="/" class="flex items-center gap-3 mb-4">
+          <div class="relative">
+            <div class="absolute inset-0 bg-primary/30 blur-xl rounded-full"></div>
+            <lucide-icon [img]="Shield" class="relative h-8 w-8 text-primary"></lucide-icon>
+          </div>
+          <span class="text-xl font-bold tracking-tight">SENTRIX <span class="text-primary">AI</span></span>
+        </a>
+        <p class="text-muted-foreground text-sm mb-6 max-w-xs">
+          Plataforma de cibersegurança automotiva com inteligência artificial para veículos conectados.
+        </p>
+        <div class="flex items-center gap-4">
+          <a href="#" class="p-2 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors">
+            <lucide-icon [img]="Globe" class="h-4 w-4 text-muted-foreground"></lucide-icon>
+          </a>
+          <a href="#" class="p-2 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors">
+            <lucide-icon [img]="Link2" class="h-4 w-4 text-muted-foreground"></lucide-icon>
+          </a>
+          <a href="#" class="p-2 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors">
+            <lucide-icon [img]="Code2" class="h-4 w-4 text-muted-foreground"></lucide-icon>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="font-semibold mb-4">Produto</h4>
+        <ul class="space-y-3">
+          <li *ngFor="let link of product">
+            <a *ngIf="link.href.startsWith('#')"
+               [routerLink]="[]" 
+               [fragment]="link.href.replace('#', '')"
+               class="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              {{ link.name }}
+            </a>
+            <a *ngIf="!link.href.startsWith('#') && !link.href.startsWith('http')"
+               [routerLink]="link.href" 
+               target="_blank"
+               class="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              {{ link.name }}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-semibold mb-4">Empresa</h4>
+        <ul class="space-y-3">
+          <li *ngFor="let link of company">
+            <a *ngIf="link.href === '#'" 
+               href="#" 
+               class="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              {{ link.name }}
+            </a>
+            <a *ngIf="link.href !== '#'" 
+               [routerLink]="link.href" 
+               target="_blank"
+               class="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              {{ link.name }}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-semibold mb-4">Legal</h4>
+        <ul class="space-y-3">
+          <li *ngFor="let link of legal">
+            <a *ngIf="link.href.startsWith('#')"
+               [routerLink]="[]" 
+               [fragment]="link.href.replace('#', '')"
+               class="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              {{ link.name }}
+            </a>
+            <a *ngIf="link.href.startsWith('http')"
+               [href]="link.href" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               class="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              {{ link.name }}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-12 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-sm text-muted-foreground">© {{ currentYear }} SENTRIX AI. Todos os direitos reservados.</p>
+      <div class="flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
+        <span class="text-sm text-muted-foreground">Todos os sistemas operacionais</span>
+      </div>
+    </div>
+  </div>
+</footer>

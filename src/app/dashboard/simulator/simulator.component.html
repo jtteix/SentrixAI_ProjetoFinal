@@ -1,0 +1,408 @@
+<app-dashboard-header title="Simulador de Condução" subtitle="Rota: Shopping Barra → Aeroporto · Salvador / BA"></app-dashboard-header>
+
+<div class="p-4 space-y-4">
+
+  <!-- ─── MAIN GRID ───────────────────────────────────────────── -->
+  <div class="grid xl:grid-cols-3 gap-4 items-start">
+
+    <!-- MAP (spans 2 cols) -->
+    <div class="xl:col-span-2 rounded-2xl border border-border overflow-hidden shadow-2xl" style="background:#0d1117">
+
+      <!-- Map toolbar -->
+      <div class="flex items-center justify-between px-4 py-2.5 border-b border-white/10" style="background:#161b22">
+        <div class="flex items-center gap-2">
+          <lucide-icon [img]="MapPin" class="h-4 w-4 text-primary"></lucide-icon>
+          <span class="font-semibold text-sm">Salvador, BA — Navegação SENTRIX AI</span>
+          <span *ngIf="simState === 'running'" class="flex items-center gap-1 text-xs text-success ml-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></span> Ao vivo
+          </span>
+        </div>
+        <div class="text-xs text-muted-foreground font-mono">
+          {{ lat | number:'1.4-4' }}°S {{ lng | number:'1.4-4' }}°W
+        </div>
+      </div>
+
+      <!-- SVG Map — Google Maps dark style -->
+      <div class="relative" style="background:#0d1117">
+        <svg viewBox="0 0 780 440" class="w-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="oceanGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#1a2744"/>
+              <stop offset="100%" stop-color="#0f1b33"/>
+            </linearGradient>
+            <linearGradient id="routeGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#2563eb" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="#06b6d4"/>
+            </linearGradient>
+            <filter id="vehicleGlow">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="routeGlow">
+              <feGaussianBlur stdDeviation="2" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <!-- ── OCEAN / BAÍa ── -->
+          <rect width="780" height="440" fill="#0d1117"/>
+          <polygon points="580,0 780,0 780,440 540,440 480,380 500,300 560,220 600,150 580,80" fill="url(#oceanGrad)" opacity="0.9"/>
+          <text x="680" y="200" fill="#1e3a6e" font-size="12" font-family="Inter,sans-serif" transform="rotate(-20,680,200)">Baía de Todos os Santos</text>
+
+          <!-- ── LAND BASE ── -->
+          <rect x="0" y="0" width="590" height="440" fill="#161b22"/>
+          <rect x="550" y="0" width="60" height="200" fill="#161b22"/>
+
+          <!-- ── PARKS / VEGETATION ── -->
+          <ellipse cx="95" cy="300" rx="35" ry="25" fill="#1a2e1a" opacity="0.8"/>
+          <ellipse cx="200" cy="180" rx="25" ry="18" fill="#1a2e1a" opacity="0.7"/>
+          <rect x="440" y="320" width="50" height="30" rx="6" fill="#1a2e1a" opacity="0.6"/>
+          <text x="85" y="322" fill="#2d4a2d" font-size="8" font-family="Inter,sans-serif">Parque</text>
+
+          <!-- ── SECONDARY STREETS (thin, dark) ── -->
+          <g stroke="#1f2937" stroke-width="2.5" fill="none" opacity="0.9">
+            <!-- Horizontal grid -->
+            <line x1="20" y1="340" x2="200" y2="340"/>
+            <line x1="20" y1="310" x2="200" y2="310"/>
+            <line x1="20" y1="280" x2="160" y2="280"/>
+            <line x1="80" y1="250" x2="300" y2="230"/>
+            <line x1="300" y1="230" x2="550" y2="200"/>
+            <line x1="150" y1="380" x2="400" y2="350"/>
+            <line x1="400" y1="350" x2="560" y2="330"/>
+            <!-- Vertical grid -->
+            <line x1="120" y1="420" x2="120" y2="280"/>
+            <line x1="200" y1="420" x2="200" y2="280"/>
+            <line x1="280" y1="420" x2="280" y2="260"/>
+            <line x1="360" y1="420" x2="360" y2="230"/>
+            <line x1="440" y1="420" x2="440" y2="220"/>
+            <line x1="520" y1="380" x2="520" y2="170"/>
+          </g>
+
+          <!-- ── PRIMARY ROADS (medium, grey) ── -->
+          <g stroke="#2d3748" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Av. Oceânica coastal road -->
+            <path d="M50,390 C80,370 120,345 160,320 C200,298 240,285 280,272"/>
+            <!-- Corredor da Vitória -->
+            <path d="M280,272 C320,260 360,252 400,242 C440,232 480,222 520,210"/>
+            <!-- Cross streets -->
+            <line x1="160" y1="320" x2="160" y2="420"/>
+            <line x1="280" y1="272" x2="280" y2="420"/>
+            <line x1="400" y1="242" x2="400" y2="380"/>
+            <line x1="520" y1="210" x2="520" y2="380"/>
+            <line x1="80" y1="390" x2="560" y2="340"/>
+          </g>
+
+          <!-- ── HIGHWAYS / AV. PARALELA (thick, lighter) ── -->
+          <g stroke="#374151" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Av. Paralela (main highway N-S) -->
+            <path d="M600,440 C610,400 625,360 635,310 C645,260 650,210 652,155 C654,110 655,70 655,30"/>
+            <!-- BR-324 connection -->
+            <path d="M520,210 C550,195 575,180 600,160 C620,145 635,130 648,110"/>
+            <!-- Av. Suburbana -->
+            <path d="M400,242 C430,230 460,218 490,205 C515,195 535,185 555,175"/>
+          </g>
+          <!-- Highway lane marks -->
+          <g stroke="#4b5563" stroke-width="1.5" stroke-dasharray="8,10" fill="none" opacity="0.5">
+            <path d="M600,440 C610,400 625,360 635,310 C645,260 650,210 652,155 C654,110 655,70 655,30"/>
+          </g>
+
+          <!-- ── MAIN ROUTE (full, grey) ── -->
+          <path [attr.d]="fullPath" fill="none" stroke="#374151" stroke-width="6"
+                stroke-linecap="round" stroke-linejoin="round"/>
+
+          <!-- ── TRAVELLED PATH (blue glow like Google Maps) ── -->
+          <path *ngIf="simState !== 'idle'" [attr.d]="travelledPath" fill="none"
+                stroke="url(#routeGrad)" stroke-width="6"
+                stroke-linecap="round" stroke-linejoin="round" filter="url(#routeGlow)" opacity="0.95"/>
+
+          <!-- ── STREET LABELS ── -->
+          <g fill="#6b7280" font-size="8.5" font-family="Inter,sans-serif" font-weight="500">
+            <text x="140" y="340" transform="rotate(-20,140,340)">Av. Oceânica</text>
+            <text x="310" y="258" transform="rotate(-8,310,258)">Corredor da Vitória</text>
+            <text x="430" y="230" transform="rotate(-8,430,230)">Av. Garibaldi</text>
+            <text x="620" y="310" transform="rotate(-75,620,310)">Av. Paralela</text>
+            <text x="530" y="190" transform="rotate(-15,530,190)">Av. Vasco da Gama</text>
+          </g>
+
+          <!-- ── LANDMARK DOTS & LABELS ── -->
+          <g *ngFor="let lm of landmarks">
+            <circle [attr.cx]="lm.x" [attr.cy]="lm.y" r="5"
+                    fill="#1f2937" stroke="#4b5563" stroke-width="1.5"/>
+            <circle [attr.cx]="lm.x" [attr.cy]="lm.y" r="2.5" fill="#9ca3af"/>
+            <text [attr.x]="lm.x + 8" [attr.y]="lm.y + 3.5"
+                  fill="#9ca3af" font-size="9" font-family="Inter,sans-serif">{{ lm.label }}</text>
+          </g>
+
+          <!-- ── START & END MARKERS ── -->
+          <!-- Start: green circle -->
+          <g [attr.transform]="'translate(' + route[0].x + ',' + route[0].y + ')'">
+            <circle r="10" fill="#16a34a" opacity="0.25"/>
+            <circle r="6" fill="#22c55e"/>
+            <text x="10" y="4" fill="#22c55e" font-size="9" font-weight="600" font-family="Inter,sans-serif">Barra</text>
+          </g>
+          <!-- End: red pin -->
+          <g [attr.transform]="'translate(' + route[route.length-1].x + ',' + route[route.length-1].y + ')'">
+            <circle r="10" fill="#dc2626" opacity="0.25"/>
+            <circle r="6" fill="#ef4444"/>
+            <text x="-50" y="-10" fill="#ef4444" font-size="9" font-weight="600" font-family="Inter,sans-serif">✈ Aeroporto</text>
+          </g>
+
+          <!-- ── VEHICLE (navigation arrow style) ── -->
+          <g *ngIf="simState !== 'idle'"
+             [attr.transform]="'translate(' + vehicleX + ',' + vehicleY + ')'"
+             filter="url(#vehicleGlow)">
+            <!-- accuracy circle -->
+            <circle r="22" [attr.fill]="safeModeActive ? 'rgba(34,197,94,0.12)' : 'rgba(6,182,212,0.12)'"/>
+            <!-- direction arrow -->
+            <polygon points="0,-12 8,8 0,4 -8,8"
+                     [attr.fill]="safeModeActive ? '#22c55e' : '#06b6d4'"
+                     stroke="white" stroke-width="1.5"/>
+          </g>
+
+          <!-- ── COMPASS ── -->
+          <g transform="translate(750,50)">
+            <circle r="20" fill="#161b22" stroke="#2d3748" stroke-width="1.5"/>
+            <text x="0" y="-7" text-anchor="middle" fill="#ef4444" font-size="10" font-weight="700">N</text>
+            <text x="0" y="14" text-anchor="middle" fill="#6b7280" font-size="9">S</text>
+            <text x="13" y="4" text-anchor="middle" fill="#6b7280" font-size="9">L</text>
+            <text x="-13" y="4" text-anchor="middle" fill="#6b7280" font-size="9">O</text>
+            <line x1="0" y1="-4" x2="0" y2="-14" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/>
+            <line x1="0" y1="4" x2="0" y2="12" stroke="#6b7280" stroke-width="1.5" stroke-linecap="round"/>
+          </g>
+
+          <!-- ── SCALE BAR ── -->
+          <g transform="translate(30,420)">
+            <rect width="60" height="4" rx="2" fill="#374151"/>
+            <rect width="30" height="4" rx="2" fill="#6b7280"/>
+            <text x="0" y="16" fill="#6b7280" font-size="8" font-family="monospace">0</text>
+            <text x="52" y="16" fill="#6b7280" font-size="8" font-family="monospace">5km</text>
+          </g>
+        </svg>
+
+        <!-- Speed overlay (bottom left of map) -->
+        <div class="absolute bottom-4 left-4 glass-strong rounded-xl px-4 py-2.5 border border-white/10">
+          <div class="flex items-end gap-1">
+            <span class="text-3xl font-bold font-mono leading-none"
+                  [ngClass]="speedColor">{{ speed }}</span>
+            <span class="text-xs text-muted-foreground mb-0.5">km/h</span>
+          </div>
+          <p class="text-xs text-muted-foreground mt-0.5">📍 {{ locationLabel }}</p>
+        </div>
+
+        <!-- Safe mode badge on map -->
+        <div *ngIf="safeModeActive"
+             class="absolute top-3 left-3 flex items-center gap-2 px-3 py-1.5 rounded-full bg-success/20 border border-success/40">
+          <lucide-icon [img]="Shield" class="h-3.5 w-3.5 text-success"></lucide-icon>
+          <span class="text-xs text-success font-semibold">Modo Seguro Ativo</span>
+        </div>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="px-4 py-3 border-t border-white/10" style="background:#161b22">
+        <div class="flex items-center justify-between text-xs text-muted-foreground mb-1.5">
+          <span class="flex items-center gap-1">🟢 Shopping Barra</span>
+          <span class="font-medium text-foreground">{{ round(progressPct) }}% da rota</span>
+          <span class="flex items-center gap-1">✈️ Aeroporto</span>
+        </div>
+        <div class="h-2 rounded-full bg-secondary overflow-hidden">
+          <div class="h-full rounded-full transition-all duration-300"
+               [ngClass]="safeModeActive ? 'bg-success' : 'bg-primary'"
+               [style.width.%]="progressPct"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── RIGHT PANEL ─────────────────────────────────────────── -->
+    <div class="flex flex-col gap-4">
+
+      <!-- ALERT BLOCK (inside panel, not fixed) -->
+      <div *ngIf="activeEvent"
+           class="rounded-2xl border-2 overflow-hidden transition-all"
+           [ngClass]="[borderSeverity(activeEvent.severity),
+                       activeEvent.severity === 'critical' ? 'pulse-danger' : '']">
+
+        <!-- Alert header bar -->
+        <div class="flex items-center gap-2 px-4 py-2.5"
+             [ngClass]="activeEvent.severity === 'critical' ? 'bg-danger/20' :
+                        activeEvent.severity === 'high'     ? 'bg-danger/10' : 'bg-warning/10'">
+          <lucide-icon [img]="AlertTriangle" class="h-4 w-4 flex-shrink-0" [ngClass]="iconSeverity(activeEvent.severity)"></lucide-icon>
+          <span class="text-xs font-bold uppercase tracking-wider flex-1" [ngClass]="iconSeverity(activeEvent.severity)">
+            {{ activeEvent.severity === 'critical' ? '🚨 AMEAÇA CRÍTICA' : activeEvent.severity === 'high' ? '⚠️ Alto Risco' : '⚠️ Atenção' }}
+          </span>
+          <button *ngIf="!activeEvent.requiresSafeMode || safeModeActive"
+                  (click)="dismissAlert()"
+                  class="text-muted-foreground hover:text-foreground p-0.5 rounded transition-colors">
+            <lucide-icon [img]="X" class="h-3.5 w-3.5"></lucide-icon>
+          </button>
+        </div>
+
+        <!-- Alert body -->
+        <div class="p-4 space-y-3" [ngClass]="bgSeverity(activeEvent.severity)">
+          <div>
+            <p class="font-semibold text-sm mb-1">{{ activeEvent.title }}</p>
+            <p class="text-xs text-muted-foreground leading-relaxed">{{ activeEvent.description }}</p>
+          </div>
+
+          <!-- Advice box -->
+          <div class="flex items-start gap-2 p-3 rounded-xl bg-background/60 border border-border">
+            <lucide-icon [img]="Shield" class="h-3.5 w-3.5 text-primary flex-shrink-0 mt-0.5"></lucide-icon>
+            <p class="text-xs leading-relaxed">{{ activeEvent.advice }}</p>
+          </div>
+
+          <!-- Critical: countdown + button -->
+          <ng-container *ngIf="activeEvent.requiresSafeMode && !safeModeActive">
+            <div class="flex items-center gap-3">
+              <div class="flex-1 h-2 rounded-full bg-secondary overflow-hidden">
+                <div class="h-full bg-danger rounded-full transition-all duration-1000"
+                     [style.width.%]="(safeModeCountdown / 10) * 100"></div>
+              </div>
+              <span class="text-sm font-bold font-mono text-danger shrink-0">{{ safeModeCountdown }}s</span>
+            </div>
+            <button (click)="activateSafeMode()"
+                    class="w-full flex items-center justify-center gap-2 h-11 rounded-xl bg-danger text-white font-bold text-sm hover:bg-danger/90 transition-all">
+              <lucide-icon [img]="Lock" class="h-4 w-4"></lucide-icon>
+              ATIVAR MODO SEGURO AGORA
+            </button>
+            <p class="text-xs text-center text-muted-foreground">Ativação automática em {{ safeModeCountdown }}s</p>
+          </ng-container>
+
+          <!-- After safe mode active -->
+          <ng-container *ngIf="activeEvent.requiresSafeMode && safeModeActive">
+            <div class="flex items-center gap-2 p-3 rounded-xl bg-success/10 border border-success/30">
+              <lucide-icon [img]="CheckCircle" class="h-4 w-4 text-success"></lucide-icon>
+              <span class="text-xs text-success font-medium">Modo Seguro ativo — isolando ameaça...</span>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <!-- Safe mode active banner (when no alert) -->
+      <div *ngIf="safeModeActive && !activeEvent"
+           class="flex items-center justify-between p-4 rounded-2xl bg-success/10 border border-success/30">
+        <div class="flex items-center gap-2">
+          <lucide-icon [img]="Shield" class="h-5 w-5 text-success"></lucide-icon>
+          <div>
+            <p class="text-sm font-semibold text-success">Modo Seguro Ativo</p>
+            <p class="text-xs text-muted-foreground">Velocidade limitada · Comun. isoladas</p>
+          </div>
+        </div>
+        <button (click)="deactivateSafeMode()"
+                class="px-3 py-1.5 rounded-lg border border-success/40 text-success text-xs hover:bg-success/10 transition-colors">
+          Desativar
+        </button>
+      </div>
+
+      <!-- HUD -->
+      <div class="glass rounded-2xl border border-border p-4">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <lucide-icon [img]="Gauge" class="h-4 w-4 text-primary"></lucide-icon>
+            <span class="font-semibold text-sm">Painel do Veículo</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <div class="w-2 h-2 rounded-full"
+                 [ngClass]="simState === 'running' ? 'bg-success animate-pulse' : 'bg-muted-foreground'"></div>
+            <span class="text-xs text-muted-foreground">
+              {{ simState === 'running' ? 'Em Movimento' : simState === 'paused' ? 'Pausado' : simState === 'finished' ? 'Chegou' : 'Parado' }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Speed + Score -->
+        <div class="grid grid-cols-2 gap-3 mb-3">
+          <div class="rounded-xl p-3 text-center border border-border" style="background:#0d1117">
+            <p class="text-xs text-muted-foreground mb-1">Velocidade</p>
+            <p class="text-3xl font-bold font-mono leading-none" [ngClass]="speedColor">{{ speed }}</p>
+            <p class="text-xs text-muted-foreground mt-0.5">km/h</p>
+          </div>
+          <div class="rounded-xl p-3 text-center border border-border" style="background:#0d1117">
+            <p class="text-xs text-muted-foreground mb-1">Score IA</p>
+            <p class="text-3xl font-bold font-mono leading-none" [ngClass]="scoreColor">{{ round(securityScore) }}</p>
+            <p class="text-xs text-muted-foreground mt-0.5">/ 100</p>
+          </div>
+        </div>
+
+        <!-- Temp + Battery -->
+        <div class="grid grid-cols-2 gap-2 mb-3">
+          <div class="flex items-center gap-2 p-2.5 rounded-xl bg-secondary/30 border border-border">
+            <lucide-icon [img]="Thermometer" class="h-4 w-4 text-warning shrink-0"></lucide-icon>
+            <div>
+              <p class="text-xs text-muted-foreground">Motor</p>
+              <p class="text-sm font-bold">{{ engineTemp }}°C</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 p-2.5 rounded-xl bg-secondary/30 border border-border">
+            <lucide-icon [img]="Battery" class="h-4 w-4 text-success shrink-0"></lucide-icon>
+            <div>
+              <p class="text-xs text-muted-foreground">Bateria</p>
+              <p class="text-sm font-bold">{{ battery }}%</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Systems -->
+        <div class="grid grid-cols-2 gap-2">
+          <div *ngFor="let sys of systems"
+               class="flex items-center gap-2 p-2 rounded-lg border transition-all"
+               [ngClass]="sys.ok ? 'bg-success/5 border-success/20' : 'bg-danger/10 border-danger/40'">
+            <lucide-icon [img]="sys.icon" class="h-3.5 w-3.5 shrink-0" [ngClass]="sys.ok ? 'text-success' : 'text-danger'"></lucide-icon>
+            <span class="text-xs">{{ sys.name }}</span>
+            <div class="ml-auto w-1.5 h-1.5 rounded-full flex-shrink-0"
+                 [ngClass]="sys.ok ? 'bg-success' : 'bg-danger animate-ping'"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="glass rounded-2xl border border-border p-4">
+        <p class="text-xs text-muted-foreground mb-3 font-medium uppercase tracking-wider">Controles</p>
+        <div class="flex flex-col gap-2">
+          <button *ngIf="simState === 'idle' || simState === 'finished'"
+                  (click)="start()"
+                  class="flex items-center justify-center gap-2 h-11 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 glow-cyan-sm font-medium transition-all text-sm">
+            <lucide-icon [img]="Play" class="h-4 w-4"></lucide-icon>
+            {{ simState === 'finished' ? 'Reiniciar' : 'Iniciar Simulação' }}
+          </button>
+          <button *ngIf="simState === 'running'"
+                  (click)="pause()"
+                  class="flex items-center justify-center gap-2 h-11 rounded-xl bg-warning/10 border border-warning/30 text-warning hover:bg-warning/20 font-medium transition-all text-sm">
+            <lucide-icon [img]="Square" class="h-4 w-4"></lucide-icon>
+            Pausar
+          </button>
+          <button *ngIf="simState === 'paused'"
+                  (click)="start()"
+                  class="flex items-center justify-center gap-2 h-11 rounded-xl bg-success/10 border border-success/30 text-success hover:bg-success/20 font-medium transition-all text-sm">
+            <lucide-icon [img]="Play" class="h-4 w-4"></lucide-icon>
+            Continuar
+          </button>
+          <button *ngIf="simState !== 'idle'"
+                  (click)="reset()"
+                  class="h-9 rounded-xl border border-border hover:bg-secondary text-xs text-muted-foreground transition-all">
+            Resetar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── EVENT LOG ───────────────────────────────────────────── -->
+  <div class="glass rounded-2xl border border-border p-4">
+    <div class="flex items-center gap-2 mb-3">
+      <lucide-icon [img]="Activity" class="h-4 w-4 text-primary"></lucide-icon>
+      <span class="font-semibold text-sm">Log de Eventos</span>
+      <span *ngIf="simState === 'running'" class="text-xs px-2 py-0.5 rounded-full bg-success/10 text-success flex items-center gap-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></span>Tempo real
+      </span>
+    </div>
+    <div class="flex flex-col gap-1 max-h-36 overflow-y-auto font-mono text-xs">
+      <div *ngFor="let entry of eventLog" class="flex gap-3 leading-relaxed">
+        <span class="text-muted-foreground shrink-0">{{ entry.time }}</span>
+        <span [ngClass]="logColor(entry.severity)">{{ entry.msg }}</span>
+      </div>
+      <div *ngIf="eventLog.length === 0" class="text-muted-foreground italic">
+        Aguardando início da simulação...
+      </div>
+    </div>
+  </div>
+
+</div>

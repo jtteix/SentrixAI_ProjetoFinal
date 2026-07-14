@@ -1,0 +1,75 @@
+<app-dashboard-header title="Central de Privacidade" subtitle="Gerencie seus dados e preferências de privacidade"></app-dashboard-header>
+
+<div class="p-6 space-y-6">
+  <!-- LGPD Banner -->
+  <div class="bg-success/10 border border-success/20 rounded-xl p-6">
+    <div class="flex items-start gap-4">
+      <div class="p-3 rounded-xl bg-success/10">
+        <lucide-icon [img]="Shield" class="h-6 w-6 text-success"></lucide-icon>
+      </div>
+      <div class="flex-1">
+        <h3 class="font-semibold text-success mb-1">Conformidade LGPD</h3>
+        <p class="text-sm text-muted-foreground">
+          Seus dados são processados em conformidade com a Lei Geral de Proteção de Dados (LGPD).
+          Você tem total controle sobre suas informações pessoais.
+        </p>
+      </div>
+      <button class="px-3 py-1.5 rounded-lg border border-success/30 text-success hover:bg-success/10 text-sm transition-colors">
+        Ver Política
+      </button>
+    </div>
+  </div>
+
+  <!-- Data Rights -->
+  <div class="grid md:grid-cols-3 gap-4">
+    <div *ngFor="let right of rights" class="glass rounded-xl p-6 border border-border hover:border-primary/30 transition-all cursor-pointer group">
+      <div class="p-3 rounded-xl bg-primary/10 w-fit mb-4 group-hover:bg-primary/20 transition-colors">
+        <lucide-icon [img]="right.icon" class="h-5 w-5 text-primary"></lucide-icon>
+      </div>
+      <h4 class="font-semibold mb-1">{{ right.title }}</h4>
+      <p class="text-sm text-muted-foreground">{{ right.description }}</p>
+    </div>
+  </div>
+
+  <!-- Consent Management -->
+  <div class="glass rounded-xl p-6 border border-border">
+    <div class="flex items-center gap-2 mb-6">
+      <lucide-icon [img]="FileText" class="h-5 w-5 text-primary"></lucide-icon>
+      <h3 class="font-semibold">Gerenciamento de Consentimento</h3>
+    </div>
+    <div class="space-y-6">
+      <div *ngFor="let category of categories()">
+        <h4 class="text-sm font-medium text-muted-foreground mb-3">{{ category }}</h4>
+        <div class="space-y-3">
+          <div *ngFor="let setting of groupedSettings[category]"
+               class="flex items-center justify-between p-4 rounded-xl bg-secondary/30 hover:bg-secondary/50 transition-colors">
+            <div class="flex-1">
+              <p class="font-medium">{{ setting.name }}</p>
+              <p class="text-sm text-muted-foreground">{{ setting.description }}</p>
+            </div>
+            <button (click)="toggle(setting.id)" class="ml-4 relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                    [class.bg-success]="setting.enabled" [class.bg-secondary]="!setting.enabled">
+              <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
+                    [class.translate-x-6]="setting.enabled" [class.translate-x-1]="!setting.enabled"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Summary -->
+  <div class="glass rounded-xl p-6 border border-border">
+    <div class="flex items-center gap-2 mb-4">
+      <lucide-icon [img]="Lock" class="h-5 w-5 text-primary"></lucide-icon>
+      <h3 class="font-semibold">Resumo de Dados</h3>
+    </div>
+    <div class="grid md:grid-cols-4 gap-4">
+      <div *ngFor="let item of summary" class="p-4 rounded-lg bg-secondary/30">
+        <p class="text-sm text-muted-foreground">{{ item.label }}</p>
+        <p class="text-2xl font-bold">{{ item.value }}</p>
+        <p class="text-xs text-muted-foreground">{{ item.detail }}</p>
+      </div>
+    </div>
+  </div>
+</div>

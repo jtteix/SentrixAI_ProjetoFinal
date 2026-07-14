@@ -1,0 +1,88 @@
+<!-- Mobile menu button -->
+<button (click)="toggleMobile()"
+  class="fixed top-4 left-4 z-50 p-2 rounded-lg glass lg:hidden" aria-label="Open menu">
+  <lucide-icon [img]="Menu" class="h-5 w-5"></lucide-icon>
+</button>
+
+<!-- Mobile overlay -->
+<div *ngIf="isMobileOpen"
+  class="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 lg:hidden"
+  (click)="closeMobile()"></div>
+
+<!-- Sidebar -->
+<aside
+  class="fixed left-0 top-0 h-screen bg-sidebar border-r border-sidebar-border z-50 flex flex-col transition-all duration-300 lg:translate-x-0"
+  [class.-translate-x-full]="!isMobileOpen"
+  [class.translate-x-0]="isMobileOpen"
+  [style.width]="isCollapsed ? '80px' : '280px'">
+
+  <!-- Header -->
+  <div class="p-4 border-b border-sidebar-border">
+    <div class="flex items-center justify-between">
+      <a routerLink="/" class="flex items-center gap-3">
+        <div class="relative flex-shrink-0">
+          <div class="absolute inset-0 bg-primary/30 blur-xl rounded-full"></div>
+          <lucide-icon [img]="Shield" class="relative h-8 w-8 text-primary"></lucide-icon>
+        </div>
+        <span *ngIf="!isCollapsed" class="text-lg font-bold tracking-tight whitespace-nowrap">
+          SENTRIX <span class="text-primary">AI</span>
+        </span>
+      </a>
+      <button (click)="toggleCollapse()" class="hidden lg:flex p-2 rounded-lg hover:bg-sidebar-accent transition-colors">
+        <lucide-icon [img]="ChevronLeft" class="h-4 w-4 transition-transform" [class.rotate-180]="isCollapsed"></lucide-icon>
+      </button>
+      <button (click)="closeMobile()" class="lg:hidden p-2 rounded-lg hover:bg-sidebar-accent transition-colors">
+        <lucide-icon [img]="ChevronLeft" class="h-4 w-4"></lucide-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Nav items -->
+  <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+    <a *ngFor="let item of navItems"
+       [routerLink]="item.href"
+       routerLinkActive="bg-sidebar-primary text-sidebar-primary-foreground"
+       [routerLinkActiveOptions]="{exact: item.href === '/dashboard'}"
+       (click)="closeMobile()"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group relative text-sidebar-foreground hover:bg-sidebar-accent">
+      <lucide-icon [img]="item.icon" class="h-5 w-5 flex-shrink-0 relative z-10"></lucide-icon>
+      <span *ngIf="!isCollapsed" class="relative z-10 whitespace-nowrap">{{ item.name }}</span>
+      <!-- Tooltip when collapsed -->
+      <div *ngIf="isCollapsed"
+           class="absolute left-full ml-2 px-2 py-1 bg-popover text-popover-foreground text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap shadow-lg">
+        {{ item.name }}
+      </div>
+    </a>
+  </nav>
+
+  <!-- Bottom nav -->
+  <div class="p-4 border-t border-sidebar-border space-y-2">
+    <a *ngFor="let item of bottomItems"
+       [routerLink]="item.href"
+       routerLinkActive="bg-sidebar-primary text-sidebar-primary-foreground"
+       (click)="closeMobile()"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-sidebar-foreground hover:bg-sidebar-accent">
+      <lucide-icon [img]="item.icon" class="h-5 w-5 flex-shrink-0"></lucide-icon>
+      <span *ngIf="!isCollapsed" class="whitespace-nowrap">{{ item.name }}</span>
+    </a>
+
+    <button (click)="logout()"
+       class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:bg-sidebar-accent hover:text-foreground transition-all">
+      <lucide-icon [img]="LogOut" class="h-5 w-5 flex-shrink-0"></lucide-icon>
+      <span *ngIf="!isCollapsed" class="whitespace-nowrap">Sair</span>
+    </button>
+  </div>
+
+  <!-- User info -->
+  <div *ngIf="!isCollapsed" class="p-4 border-t border-sidebar-border">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+        <span class="text-sm font-medium text-primary">{{ userInitials }}</span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium truncate">{{ user?.name || 'Usuário' }}</p>
+        <p class="text-xs text-muted-foreground truncate">{{ user?.email }}</p>
+      </div>
+    </div>
+  </div>
+</aside>

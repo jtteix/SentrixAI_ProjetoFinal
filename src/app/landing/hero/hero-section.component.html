@@ -1,0 +1,92 @@
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+  <!-- Background -->
+  <div class="absolute inset-0 bg-gradient-to-b from-background via-background to-background/95"></div>
+  <div class="absolute inset-0 grid-pattern opacity-50"></div>
+  <canvas #particleCanvas class="particle-canvas"></canvas>
+
+  <!-- Ambient glow -->
+  <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
+  <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl"></div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-6 py-20 text-center">
+    <!-- Badge -->
+    <div class="animate-fade-in-up inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8">
+      <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+      <span class="text-sm text-muted-foreground">AI Automotive Cybersecurity Platform</span>
+    </div>
+
+    <!-- Main headline -->
+    <h1 class="animate-fade-in-up text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6" style="animation-delay: 0.1s">
+      <span class="text-foreground">SENTRIX</span>
+      <span class="gradient-text text-glow-cyan">AI</span>
+    </h1>
+
+    <!-- Subheadline -->
+    <p class="animate-fade-in-up text-xl md:text-2xl text-muted-foreground mb-4" style="animation-delay: 0.2s">
+      Securing the future of mobility.
+    </p>
+
+    <!-- Supporting text -->
+    <p class="animate-fade-in-up text-base md:text-lg text-muted-foreground/80 max-w-2xl mx-auto mb-10" style="animation-delay: 0.3s">
+      Monitoramento de ameaças em tempo real, proteção com inteligência artificial
+      e segurança veicular com foco em privacidade para veículos conectados.
+    </p>
+
+    <!-- CTA Buttons -->
+    <div class="animate-fade-in-up flex flex-col sm:flex-row items-center justify-center gap-4" style="animation-delay: 0.4s">
+      <a routerLink="/login"
+         class="group inline-flex items-center justify-center h-11 px-6 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 glow-cyan text-sm font-medium transition-all">
+        Acessar Dashboard
+        <lucide-icon [img]="ArrowRight" class="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform"></lucide-icon>
+      </a>
+  
+    </div>
+
+    <!-- Vehicle Visualization -->
+    <div class="animate-fade-in-up mt-16" style="animation-delay: 0.5s">
+      <div class="relative w-full max-w-2xl mx-auto aspect-video">
+        <svg viewBox="0 0 400 200" class="w-full h-full">
+          <defs>
+            <linearGradient id="vehicleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="rgb(0, 200, 255)" stop-opacity="0.8" />
+              <stop offset="100%" stop-color="rgb(100, 150, 255)" stop-opacity="0.4" />
+            </linearGradient>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+              <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          <path
+            d="M50,130 L70,130 L80,100 L140,90 L180,70 L280,70 L320,90 L340,100 L350,130 L50,130"
+            fill="none" stroke="url(#vehicleGradient)" stroke-width="2" filter="url(#glow)" />
+
+          <circle cx="100" cy="130" r="20" fill="none" stroke="url(#vehicleGradient)" stroke-width="2" filter="url(#glow)" />
+          <circle cx="300" cy="130" r="20" fill="none" stroke="url(#vehicleGradient)" stroke-width="2" filter="url(#glow)" />
+
+          <g>
+            <path
+              d="M200,40 L220,50 L220,70 C220,85 210,95 200,100 C190,95 180,85 180,70 L180,50 Z"
+              fill="rgba(0, 200, 255, 0.2)" stroke="rgb(0, 200, 255)" stroke-width="2" filter="url(#glow)" />
+            <text x="200" y="75" text-anchor="middle" fill="rgb(0, 200, 255)" font-size="16" font-weight="bold">AI</text>
+          </g>
+
+          <line *ngFor="let i of [1,2,3,4,5]" [attr.x1]="200" [attr.y1]="100" [attr.x2]="200 + (i - 3) * 50" [attr.y2]="60"
+                stroke="rgb(0, 200, 255)" stroke-width="1" stroke-dasharray="5,5" opacity="0.3" />
+        </svg>
+
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2">
+      <div class="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex items-start justify-center p-2">
+        <div class="w-1 h-3 bg-primary rounded-full animate-bounce"></div>
+      </div>
+    </div>
+  </div>
+</section>

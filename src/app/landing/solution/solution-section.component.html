@@ -1,0 +1,54 @@
+<section id="solution" class="relative py-24 md:py-32 overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-b from-background via-primary/5 to-background"></div>
+  <div class="absolute top-1/4 left-0 w-72 h-72 bg-primary/5 rounded-full blur-3xl"></div>
+  <div class="absolute bottom-1/4 right-0 w-72 h-72 bg-accent/5 rounded-full blur-3xl"></div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-6">
+    <div appScrollReveal class="text-center mb-16">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
+        <lucide-icon [img]="Zap" class="h-4 w-4 text-primary"></lucide-icon>
+        <span class="text-sm text-primary">A Solução</span>
+      </div>
+      <h2 class="text-3xl md:text-5xl font-bold mb-6">
+        Defesa Automotiva <span class="gradient-text">Powered by AI</span>
+      </h2>
+      <p class="text-lg text-muted-foreground max-w-2xl mx-auto">
+        SENTRIX AI combina inteligência artificial avançada com monitoramento em tempo real para proteger veículos conectados contra ameaças cibernéticas.
+      </p>
+    </div>
+
+    <!-- Features grid (Stagger) -->
+    <div appScrollReveal="stagger" [staggerStep]="100" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div *ngFor="let feature of features"
+           class="glass rounded-2xl p-6 transition-all duration-300 cursor-pointer group border hover:-translate-y-1"
+           [ngClass]="'border-' + feature.color + '/20'">
+        <div class="inline-flex p-3 rounded-xl mb-4"
+             [ngClass]="'bg-' + feature.color + '/10 text-' + feature.color">
+          <lucide-icon [img]="feature.icon" class="h-6 w-6"></lucide-icon>
+        </div>
+        <h3 class="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">{{ feature.title }}</h3>
+        <p class="text-sm text-muted-foreground leading-relaxed">{{ feature.description }}</p>
+      </div>
+    </div>
+
+    <!-- Bottom -->
+    <div appScrollReveal="scale" class="mt-16 text-center">
+      <div class="inline-flex flex-wrap items-center gap-4 px-8 py-4 rounded-2xl glass">
+        <div class="flex items-center gap-2">
+          <lucide-icon [img]="Shield" class="h-5 w-5 text-primary"></lucide-icon>
+          <span class="text-sm font-medium">Zero Trust Architecture</span>
+        </div>
+        <div class="w-px h-6 bg-border"></div>
+        <div class="flex items-center gap-2">
+          <lucide-icon [img]="Shield" class="h-5 w-5 text-success"></lucide-icon>
+          <span class="text-sm font-medium">Conformidade LGPD</span>
+        </div>
+        <div class="w-px h-6 bg-border"></div>
+        <div class="flex items-center gap-2">
+          <lucide-icon [img]="Brain" class="h-5 w-5 text-accent"></lucide-icon>
+          <span class="text-sm font-medium">Machine Learning</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

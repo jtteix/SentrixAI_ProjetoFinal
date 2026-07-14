@@ -1,0 +1,157 @@
+<section id="dashboard-preview" class="relative py-24 md:py-32 overflow-visible">
+  <div class="absolute inset-0 bg-gradient-to-b from-background via-primary/5 to-background"></div>
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-6 overflow-visible">
+    <!-- Header -->
+    <div appScrollReveal class="text-center mb-14">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
+        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+        <span class="text-sm text-primary">Preview da Plataforma</span>
+      </div>
+      <h2 class="text-3xl md:text-5xl font-bold mb-4">
+        Veja o sistema <span class="gradient-text">por dentro</span>
+      </h2>
+      <p class="text-lg text-muted-foreground max-w-2xl mx-auto">
+        Uma prévia das telas que você vai encontrar ao acessar o SENTRIX AI.
+        Segurança, clareza e controle total em uma plataforma.
+      </p>
+    </div>
+
+    <!-- Carousel wrapper com efeito fade-up garantido -->
+    <div [appScrollReveal]="'fade-up'" class="relative overflow-visible">
+      <!-- Browser mock -->
+      <div class="rounded-2xl border border-border overflow-hidden shadow-2xl animated-border">
+        <!-- Browser chrome bar -->
+        <div class="flex items-center gap-3 px-4 py-3 bg-card border-b border-border">
+          <div class="flex items-center gap-1.5">
+            <div class="w-3 h-3 rounded-full bg-danger/70"></div>
+            <div class="w-3 h-3 rounded-full bg-warning/70"></div>
+            <div class="w-3 h-3 rounded-full bg-success/70"></div>
+          </div>
+          <div class="flex-1 flex items-center justify-center">
+            <div class="px-4 py-1 rounded-md bg-secondary/50 border border-border text-xs text-muted-foreground font-mono flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></span>
+              sentrix.ai/dashboard/{{ currentSlide.id }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Screen content -->
+        <div class="bg-card min-h-[480px] flex flex-col md:flex-row overflow-hidden">
+          <!-- Mini sidebar -->
+          <div class="hidden md:flex flex-col w-48 bg-sidebar border-r border-sidebar-border p-3 gap-1 shrink-0">
+            <div class="flex items-center gap-2 px-2 py-3 mb-2">
+              <div class="w-6 h-6 rounded bg-primary/20 flex items-center justify-center">
+                <span class="text-xs font-bold text-primary">S</span>
+              </div>
+              <span class="text-xs font-bold">SENTRIX AI</span>
+            </div>
+            <div *ngFor="let slide of slides"
+                 class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs cursor-pointer transition-colors"
+                 [ngClass]="slide.id === currentSlide.id ? 'bg-primary text-primary-foreground' : 'text-sidebar-foreground hover:bg-sidebar-accent'"
+                 (click)="goTo(slides.indexOf(slide))">
+              <lucide-icon [img]="slide.icon" class="h-3.5 w-3.5 shrink-0"></lucide-icon>
+              <span class="truncate">{{ slide.title }}</span>
+            </div>
+          </div>
+
+          <!-- Main content area -->
+          <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Fake header -->
+            <div class="flex items-center justify-between px-5 py-3 border-b border-border bg-card/80">
+              <div>
+                <p class="text-sm font-semibold">{{ currentSlide.title }}</p>
+                <p class="text-xs text-muted-foreground">{{ currentSlide.subtitle }}</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs px-2 py-0.5 rounded-full" [ngClass]="currentSlide.badgeColor">
+                  {{ currentSlide.badge }}
+                </span>
+                <div class="flex items-center gap-1.5 px-2 py-1 rounded bg-success/10 border border-success/20">
+                  <div class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></div>
+                  <span class="text-xs text-success">Ao vivo</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dashboard body -->
+            <div class="flex-1 p-4 grid grid-cols-1 md:grid-rows-2 gap-3 bg-background/40">
+              <!-- Stats row -->
+              <div class="grid grid-cols-3 gap-3">
+                <div *ngFor="let stat of currentStats"
+                     class="glass rounded-xl p-3 border border-border flex flex-col gap-1">
+                  <p class="text-xs text-muted-foreground">{{ stat.label }}</p>
+                  <p class="text-lg font-bold" [ngClass]="stat.color">{{ stat.value }}</p>
+                </div>
+              </div>
+
+              <!-- Bottom row: chart mock + logs -->
+              <div class="grid grid-cols-2 gap-3">
+                <!-- Chart placeholder -->
+                <div class="glass rounded-xl border border-border p-3 flex flex-col gap-2">
+                  <p class="text-xs text-muted-foreground font-medium">Atividade</p>
+                  <div class="flex-1 flex items-end gap-1">
+                    <div *ngFor="let h of [40, 65, 30, 80, 50, 90, 60, 75, 45, 88, 55, 70]"
+                         class="flex-1 rounded-sm bg-primary/40 transition-all"
+                         [style.height.%]="h"
+                         [style.min-height]="'4px'"></div>
+                  </div>
+                </div>
+
+                <!-- Log stream -->
+                <div class="glass rounded-xl border border-border p-3 flex flex-col gap-1.5 overflow-hidden">
+                  <p class="text-xs text-muted-foreground font-medium mb-1">Log em tempo real</p>
+                  <div *ngFor="let log of currentLogs"
+                       class="text-xs font-mono text-muted-foreground truncate">
+                    {{ log }}
+                  </div>
+                  <div class="flex items-center gap-1 mt-auto">
+                    <div class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
+                    <span class="text-xs font-mono text-primary/60">aguardando events...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation arrows -->
+      <button (click)="prev()"
+              class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 w-10 h-10 rounded-full glass border border-border flex items-center justify-center hover:bg-primary/10 hover:border-primary/30 transition-all shadow-lg z-20">
+        <lucide-icon [img]="ChevronLeft" class="h-5 w-5"></lucide-icon>
+      </button>
+      <button (click)="next()"
+              class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 w-10 h-10 rounded-full glass border border-border flex items-center justify-center hover:bg-primary/10 hover:border-primary/30 transition-all shadow-lg z-20">
+        <lucide-icon [img]="ChevronRight" class="h-5 w-5"></lucide-icon>
+      </button>
+    </div>
+
+    <!-- Dots -->
+    <div appScrollReveal [revealDelay]="200" class="flex items-center justify-center gap-2 mt-8">
+      <button *ngFor="let slide of slides; let i = index"
+              (click)="goTo(i)"
+              class="rounded-full transition-all"
+              [ngClass]="i === current ? 'w-8 h-2 bg-primary' : 'w-2 h-2 bg-border hover:bg-primary/50'">
+      </button>
+    </div>
+
+    <!-- Slide label -->
+    <div appScrollReveal [revealDelay]="250" class="text-center mt-4">
+      <span class="text-sm text-muted-foreground">
+        {{ current + 1 }} / {{ slides.length }} &mdash;
+        <span class="text-foreground font-medium">{{ currentSlide.title }}</span>
+      </span>
+    </div>
+
+    <!-- CTA -->
+    <div appScrollReveal="fade-up" class="text-center mt-10">
+      <a routerLink="/login"
+         class="group inline-flex items-center justify-center gap-2 h-12 px-8 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 glow-cyan text-base font-medium transition-all">
+        Acessar o Sistema Completo
+        <lucide-icon [img]="ArrowRight" class="h-5 w-5 group-hover:translate-x-1 transition-transform"></lucide-icon>
+      </a>
+    </div>
+  </div>
+</section>

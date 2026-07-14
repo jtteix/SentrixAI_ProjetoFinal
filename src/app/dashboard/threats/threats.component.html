@@ -1,0 +1,41 @@
+<app-dashboard-header title="Central de Ameaças" subtitle="Visualize e gerencie todas as ameaças detectadas"></app-dashboard-header>
+
+<div class="p-6 space-y-6">
+  <!-- Stats -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div *ngFor="let stat of stats" class="glass rounded-xl p-4 border border-border animate-fade-in-up">
+      <p class="text-sm text-muted-foreground">{{ stat.label }}</p>
+      <p class="text-2xl font-bold" [ngClass]="stat.color">{{ stat.value }}</p>
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <div class="glass rounded-xl p-6 border border-border">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-semibold flex items-center gap-2">
+        <lucide-icon [img]="AlertTriangle" class="h-5 w-5 text-warning"></lucide-icon>
+        Atividade de Ameaças (24h)
+      </h3>
+    </div>
+    <app-threat-chart type="threats"></app-threat-chart>
+  </div>
+
+  <!-- Threats list -->
+  <div class="glass rounded-xl p-6 border border-border">
+    <div class="flex items-center justify-between mb-6">
+      <h3 class="font-semibold">Todas as Ameaças</h3>
+      <div class="flex items-center gap-2">
+        <button class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border hover:bg-secondary text-sm transition-colors">
+          <lucide-icon [img]="Filter" class="h-4 w-4"></lucide-icon> Filtrar
+        </button>
+        <button class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border hover:bg-secondary text-sm transition-colors">
+          <lucide-icon [img]="Download" class="h-4 w-4"></lucide-icon> Exportar
+        </button>
+        <button class="p-2 rounded-lg border border-border hover:bg-secondary transition-colors">
+          <lucide-icon [img]="RefreshCw" class="h-4 w-4"></lucide-icon>
+        </button>
+      </div>
+    </div>
+    <app-threat-list [threats]="threats"></app-threat-list>
+  </div>
+</div>

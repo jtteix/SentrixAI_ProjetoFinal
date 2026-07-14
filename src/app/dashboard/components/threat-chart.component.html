@@ -1,0 +1,66 @@
+<!-- Score chart -->
+<ng-container *ngIf="type === 'score'">
+  <svg [attr.viewBox]="'0 0 ' + W + ' ' + H" class="w-full h-48">
+    <defs>
+      <linearGradient id="scoreGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="5%"  stop-color="oklch(0.75 0.18 195)" stop-opacity="0.35"/>
+        <stop offset="95%" stop-color="oklch(0.75 0.18 195)" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <!-- Grid lines -->
+    <line *ngFor="let d of weeklyData; let i = index"
+          [attr.x1]="scoreX(i)" [attr.x2]="scoreX(i)"
+          [attr.y1]="pad.top" [attr.y2]="pad.top + chartH"
+          stroke="oklch(1 0 0 / 8%)" stroke-width="1"/>
+    <!-- Area fill -->
+    <path [attr.d]="scoreArea" fill="url(#scoreGrad)"/>
+    <!-- Line -->
+    <path [attr.d]="scorePath" fill="none" stroke="oklch(0.75 0.18 195)" stroke-width="2" stroke-linejoin="round"/>
+    <!-- Dots -->
+    <circle *ngFor="let d of weeklyData; let i = index"
+            [attr.cx]="scoreX(i)" [attr.cy]="scoreY(d.score)" r="4"
+            fill="oklch(0.75 0.18 195)"/>
+    <!-- Labels -->
+    <text *ngFor="let d of weeklyData; let i = index"
+          [attr.x]="scoreX(i)" [attr.y]="pad.top + chartH + 18"
+          text-anchor="middle" fill="oklch(0.65 0 0)" font-size="11">
+      {{ d.label }}
+    </text>
+    <!-- Y axis -->
+    <text *ngFor="let v of [80,90,100]; let i = index"
+          [attr.x]="pad.left - 6"
+          [attr.y]="scoreY(v) + 4"
+          text-anchor="end" fill="oklch(0.65 0 0)" font-size="10">
+      {{ v }}
+    </text>
+  </svg>
+</ng-container>
+
+<!-- Threat chart -->
+<ng-container *ngIf="type === 'threats'">
+  <svg [attr.viewBox]="'0 0 ' + W + ' ' + H" class="w-full h-48">
+    <!-- Grid lines -->
+    <line *ngFor="let d of threatData; let i = index"
+          [attr.x1]="threatX(i)" [attr.x2]="threatX(i)"
+          [attr.y1]="pad.top" [attr.y2]="pad.top + chartH"
+          stroke="oklch(1 0 0 / 8%)" stroke-width="1"/>
+    <!-- Threats line -->
+    <path [attr.d]="pathFor('threats')" fill="none" stroke="oklch(0.8 0.18 85)" stroke-width="2" stroke-linejoin="round"/>
+    <!-- Blocked line -->
+    <path [attr.d]="pathFor('blocked')" fill="none" stroke="oklch(0.7 0.2 145)" stroke-width="2" stroke-linejoin="round"/>
+    <!-- Threat dots -->
+    <circle *ngFor="let d of threatData; let i = index"
+            [attr.cx]="threatX(i)" [attr.cy]="threatY(d.threats)" r="4"
+            fill="oklch(0.8 0.18 85)"/>
+    <!-- Blocked dots -->
+    <circle *ngFor="let d of threatData; let i = index"
+            [attr.cx]="threatX(i)" [attr.cy]="threatY(d.blocked)" r="4"
+            fill="oklch(0.7 0.2 145)"/>
+    <!-- Labels -->
+    <text *ngFor="let d of threatData; let i = index"
+          [attr.x]="threatX(i)" [attr.y]="pad.top + chartH + 18"
+          text-anchor="middle" fill="oklch(0.65 0 0)" font-size="11">
+      {{ d.label }}
+    </text>
+  </svg>
+</ng-container>

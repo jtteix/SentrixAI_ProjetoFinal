@@ -1,0 +1,65 @@
+<section id="how-it-works" class="relative py-24 md:py-32 overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-b from-background via-secondary/10 to-background"></div>
+  <div class="absolute inset-0 grid-pattern opacity-30"></div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-6">
+    <!-- Header -->
+    <div appScrollReveal class="text-center mb-16">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 mb-6">
+        <lucide-icon [img]="Radio" class="h-4 w-4 text-accent"></lucide-icon>
+        <span class="text-sm text-accent">Processo</span>
+      </div>
+      <h2 class="text-3xl md:text-5xl font-bold mb-6">
+        Como a <span class="gradient-text">SENTRIX AI</span> Funciona
+      </h2>
+      <p class="text-lg text-muted-foreground max-w-2xl mx-auto">
+        Um fluxo inteligente que transforma dados brutos em proteção
+        ativa para seu veículo conectado.
+      </p>
+    </div>
+
+    <!-- Steps grid (Staggered Reveal) -->
+    <div class="relative">
+      <div class="hidden lg:block absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent -translate-y-1/2"></div>
+      
+      <!-- O grid agora revela seus filhos sequencialmente com efeito stagger -->
+      <div appScrollReveal="stagger" [staggerStep]="150" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div *ngFor="let step of steps; let i = index" class="relative">
+          <div class="glass rounded-2xl p-6 h-full hover:border-primary/30 transition-all duration-300 group">
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-4xl font-bold text-primary/20 font-mono">{{ step.number }}</span>
+              <div class="p-3 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                <lucide-icon [img]="step.icon" class="h-5 w-5"></lucide-icon>
+              </div>
+            </div>
+            <h3 class="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">{{ step.title }}</h3>
+            <p class="text-sm text-muted-foreground mb-4 leading-relaxed">{{ step.description }}</p>
+            <div class="flex flex-wrap gap-2">
+              <span *ngFor="let detail of step.details"
+                    class="text-xs px-2 py-1 rounded-md bg-secondary text-muted-foreground">
+                {{ detail }}
+              </span>
+            </div>
+          </div>
+
+          <div *ngIf="showArrow(i)" class="hidden lg:flex absolute top-1/2 -right-4 -translate-y-1/2 z-10">
+            <lucide-icon [img]="ArrowRight" class="h-5 w-5 text-primary/30"></lucide-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Animated progress bar -->
+    <div appScrollReveal="scale" [revealDelay]="400" class="mt-16 relative h-2 rounded-full bg-secondary overflow-hidden">
+      <div class="absolute inset-y-0 left-0 bg-gradient-to-r from-primary via-accent to-primary rounded-full w-1/5" style="animation: flow 3s linear infinite">
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+@keyframes flow {
+  from { left: -20%; }
+  to   { left: 100%; }
+}
+</style>

@@ -1,0 +1,31 @@
+<header class="sticky top-0 z-30 glass-strong border-b border-border">
+  <div class="flex items-center justify-between px-6 py-4">
+    <div class="pl-12 lg:pl-0">
+      <h1 class="text-xl font-semibold">{{ title }}</h1>
+      <p *ngIf="subtitle" class="text-sm text-muted-foreground">{{ subtitle }}</p>
+    </div>
+    <div class="flex items-center gap-4">
+      <!-- Search -->
+      <div class="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg bg-secondary/50 border border-border">
+        <lucide-icon [img]="Search" class="h-4 w-4 text-muted-foreground"></lucide-icon>
+        <input type="text" placeholder="Buscar..." class="bg-transparent text-sm outline-none w-40 placeholder:text-muted-foreground text-foreground" />
+        <kbd class="hidden lg:inline-flex px-1.5 py-0.5 text-xs rounded bg-muted text-muted-foreground">⌘K</kbd>
+      </div>
+      <!-- Status -->
+      <div class="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg bg-success/10 border border-success/20">
+        <div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
+        <span class="text-xs text-success font-medium">Sistema Ativo</span>
+      </div>
+      <!-- Bell -->
+      <button class="relative p-2 rounded-lg hover:bg-secondary transition-colors">
+        <lucide-icon [img]="Bell" class="h-5 w-5"></lucide-icon>
+        <span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-danger"></span>
+      </button>
+      <!-- Score -->
+      <div class="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/10 border border-primary/20">
+        <lucide-icon [img]="Shield" class="h-4 w-4 text-primary"></lucide-icon>
+        <span class="text-sm font-medium">94/100</span>
+      </div>
+    </div>
+  </div>
+</header>

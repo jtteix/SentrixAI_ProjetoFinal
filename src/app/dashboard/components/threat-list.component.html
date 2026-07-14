@@ -1,0 +1,25 @@
+<div class="space-y-3">
+  <div *ngFor="let threat of threats"
+       class="p-4 rounded-xl border transition-all hover:scale-[1.01]"
+       [ngClass]="[bgClass(threat.severity), borderClass(threat.severity)]">
+    <div class="flex items-start gap-3">
+      <div class="p-2 rounded-lg" [ngClass]="bgClass(threat.severity)">
+        <lucide-icon [img]="AlertTriangle" class="h-4 w-4" [ngClass]="iconClass(threat.severity)"></lucide-icon>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-xs px-2 py-0.5 rounded-full" [ngClass]="badgeClass(threat.severity)">
+            {{ severityLabels[threat.severity] }}
+          </span>
+          <span class="text-xs text-muted-foreground">{{ threat.type }}</span>
+        </div>
+        <p class="text-sm font-medium mb-1">{{ threat.message }}</p>
+        <p class="text-xs text-muted-foreground">{{ threat.timestamp }}</p>
+      </div>
+      <div *ngIf="showStatus" class="flex items-center gap-2">
+        <lucide-icon [img]="statusIcon(threat.status)" class="h-4 w-4" [ngClass]="statusIconClass(threat.status)"></lucide-icon>
+        <span class="text-xs capitalize">{{ threat.status }}</span>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="space-y-4">
+  <div class="flex items-center gap-2 mb-4">
+    <lucide-icon [img]="ScrollText" class="h-5 w-5 text-primary"></lucide-icon>
+    <h3 class="font-semibold">Logs de Segurança</h3>
+    <span class="text-xs px-2 py-0.5 rounded-full bg-success/10 text-success">Tempo real</span>
+  </div>
+  <div class="space-y-2 max-h-96 overflow-y-auto pr-2">
+    <div *ngFor="let entry of logs"
+         class="flex items-start gap-3 p-3 rounded-lg bg-secondary/30 hover:bg-secondary/50 transition-colors">
+      <lucide-icon [img]="icon(entry.type)" class="h-4 w-4 mt-0.5 flex-shrink-0" [ngClass]="iconColor(entry.type)"></lucide-icon>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-xs font-mono text-muted-foreground">{{ entry.timestamp }}</span>
+          <span class="text-xs text-muted-foreground">•</span>
+          <span class="text-xs text-muted-foreground truncate">{{ entry.source }}</span>
+        </div>
+        <p class="text-sm">{{ entry.message }}</p>
+      </div>
+    </div>
+  </div>
+</div>
